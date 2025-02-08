@@ -42,7 +42,7 @@
                 const data = await response.json();
 
                 if (data.success && data.redirectTo) {
-                    window.location.href = data.redirectTo;  // 🔄 Faz o redirecionamento
+                    window.location.hash.href = data.redirectTo;  // 🔄 Faz o redirecionamento
                 } else {
                     console.log("❌ Login falhou:", data.message);
                 }

@@ -3,7 +3,7 @@ const User = require('./models/User');
 const bcrypt = require('bcryptjs');
 
 // Conexão com o banco de dados 'loginDB'
-mongoose.connect('mongodb://localhost:27017/loginDB', {
+mongoose.connect('mongodb+srv://Administrador:Parafa11..@cluster0.x3ss8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {

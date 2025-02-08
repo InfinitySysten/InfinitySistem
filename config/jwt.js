@@ -1,1 +1,1 @@
-process.env.JWT_SECRET = '123456';
+process.env.JWT_SECRET = 'Tomas23122021';

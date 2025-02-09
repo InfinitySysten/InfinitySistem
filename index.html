@@ -12,7 +12,7 @@
 
     <script src="pages.js"></script>
     <script>
-        async function isAuthenticated() {
+        await function isAuthenticated() {
             const token = localStorage.getItem("token"); // ou do cookie, dependendo de onde está armazenado
 
             if (!token) {
@@ -30,7 +30,7 @@
                 });
 
             if (response.status === 401) {
-                window.location.href = "/#login"; // Redireciona para login se token for inválido
+                window.location.hash = "#/login"; // Redireciona para login se token for inválido
                 return false;
             }
 

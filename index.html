@@ -43,7 +43,7 @@
 
         const protectedPages = ["/success", "/login"]; // Defina as páginas protegidas
 
-        function checkRoute() {
+        await function checkRoute() {
             let page = window.location.hash.substring(2) || "/login"; // Se não houver hash, redireciona para login
 
             if (isAuthenticated() && page === "login") {

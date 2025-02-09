@@ -4,13 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sucesso</title>
+    <script>
+        // Se o usuário acessar diretamente "/success" sem "#", redireciona para "#/success"
+        if (!window.location.hash) {
+            const path = window.location.pathname.replace("/", ""); // Remove a barra inicial
+            if (path) {
+                window.location.replace(`#/` + path);
+            } else {
+                window.location.replace("#/login"); // Redireciona para login se não houver caminho
+            }
+        }
+    </script>
 </head>
 <body>
-    <script>
-    if (!window.location.hash) {
-        window.location.replace("#/login"); 
-    }
-    </script>
     <h2>Login bem-sucedido!</h2>
     <p>Bem-vindo à sua conta.</p>
 </body>

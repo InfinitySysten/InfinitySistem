@@ -14,7 +14,7 @@
     <script>
         async function isAuthenticated() {
             try {
-                const response = await fetch("/auth/check", { credentials: "include" });
+                const response = await fetch("/api/check", { credentials: "include" });
                 const data = await response.json();
                 return data.authenticated;
             } catch (error) {

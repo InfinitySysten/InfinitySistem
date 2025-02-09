@@ -24,7 +24,7 @@ app.post('/api/login', async (req, res) => {
         res.status(200).json({
             success: true,
             token: token, 
-            redirectTo: "success.html"  // URL de destino
+            redirectTo: "/area-exclusiva/success.html"  // URL de destino
         });
         
     } catch (error) {

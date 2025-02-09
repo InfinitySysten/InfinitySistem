@@ -19,6 +19,39 @@
 
     <p id="errorMessage" style="color: red; display: none;"></p>
 
-    <script src="api/login.js"></script> <!-- Importa o login.js -->
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Previne o envio padrão do formulário
+
+            // Obter dados do formulário
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('https://infinitysistem.onrender.com/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.redirectTo) {
+                    window.location.href = data.redirectTo;  // 🔄 Faz o redirecionamento
+                } else {
+                    console.log("❌ Login falhou:", data.message);
+                }
+                
+            } catch (error) {
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'Erro de conexão com o servidor';
+            }
+        });
+    </script>
 </body>
 </html>

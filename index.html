@@ -11,64 +11,61 @@
     </div>
 
     <script src="pages.js"></script>
-    <script>
-        async function isAuthenticated() {
-        try {
-            const response = await fetch("https://infinitysistem.onrender.com/api/protected", {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}` // No caso de cookies, o token já será enviado automaticamente.
-                },
-                credentials: "include" // Importante para enviar cookies com a requisição
-            });
+        <script>
+            async function isAuthenticated() {
+                try {
+                    const response = await fetch("https://infinitysistem.onrender.com/api/protected", {
+                        method: "GET",
+                        credentials: "include"  // Envia o cookie com a requisição
+                    });
 
-                if (response.status === 401) {
-                    return false; // Retorna false se o token for inválido
+                    if (response.status === 401) {
+                        window.location.hash = "#/login"; // Redireciona para login se a autenticação falhar
+                        return false; // Retorna false se o token for inválido ou ausente
+                    }
+
+                    return true; // Usuário autenticado
+                } catch (error) {
+                    console.error("Erro ao verificar autenticação:", error);
+                    window.location.hash = "#/login"; // Redireciona para login em caso de erro
+                    return false; // Retorna false se houver erro na verificação
+                }
+            }
+
+            const protectedPages = ["/success", "/dashboard"]; // Defina as páginas protegidas
+
+            function checkRoute() {
+                let page = window.location.hash.substring(2) || "login"; // Se não houver hash, redireciona para login
+
+                // Se já estiver logado e tentando acessar a página de login, redireciona para o dashboard
+                if (page === "login" && isAuthenticated()) {
+                    window.location.hash = "#/dashboard"; // Redireciona para dashboard se já estiver logado
+                    return;
                 }
 
-                return true; // Usuário autenticado
-            } catch (error) {
-                console.error("Erro ao verificar autenticação:", error);
-                return false; // Se houver erro, retorna false
-            }   
-        }
+                // Verifica se a página é protegida e o usuário não está autenticado
+                if (protectedPages.includes("/" + page) && !isAuthenticated()) {
+                    alert("Você precisa estar logado para acessar esta página!");
+                    window.location.hash = "#/login"; // Redireciona para login
+                    return;
+                }
 
-        const protectedPages = ["/success"]; // Defina as páginas protegidas
-
-        async function checkRoute() {
-            let page = window.location.hash.substring(2) || "login"; // Se não houver hash, redireciona para login
-
-            // Aguarda a resposta de isAuthenticated antes de continuar
-            const isLoggedIn = await isAuthenticated();
-
-            if (isLoggedIn && page === "login") {
-                window.location.hash = "#/success"; // Redireciona para sucesso se já estiver logado
-                return;
+                loadPage(page); // Carrega a página solicitada
             }
 
-            if (protectedPages.includes("/" + page) && !isLoggedIn) {
-                alert("Você precisa estar logado para acessar esta página!");
-                window.location.hash = "#/login";
-                return;
+            function loadPage(page) {
+                fetch(`${page}.html`)
+                    .then(response => {
+                        if (!response.ok) throw new Error("Página não encontrada");
+                        return response.text();
+                    })
+                    .then(content => document.getElementById("content").innerHTML = content)
+                    .catch(() => document.getElementById("content").innerHTML = "<p>Página não encontrada</p>");
             }
 
-            loadPage(page); // Carrega a página solicitada
-        }
+            window.addEventListener("hashchange", checkRoute);
 
-        function loadPage(page) {
-            fetch(`${page}.html`)
-                .then(response => {
-                    if (!response.ok) throw new Error("Página não encontrada");
-                    return response.text();
-                })
-                .then(content => document.getElementById("content").innerHTML = content)
-                .catch(() => document.getElementById("content").innerHTML = "<p>Página não encontrada</p>");
-        }
-
-        window.addEventListener("hashchange", checkRoute); // Monitorar mudanças no hash da URL
-
-        // A primeira verificação de autenticação quando a página for carregada
-        checkRoute();
-    </script>
+            checkRoute(); // Verifica a rota ao carregar a página
+        </script>
 </body>
 </html>

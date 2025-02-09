@@ -11,6 +11,11 @@
     </div>
 
     <script>
+
+        if (!window.location.hash) {
+            window.location.replace("#/login"); // Garante que a navegação sempre use hash
+        }
+        
         async function isAuthenticated() {
             const token = localStorage.getItem("token"); // Ou use cookies, dependendo de como você armazena
             

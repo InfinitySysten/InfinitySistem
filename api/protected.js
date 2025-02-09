@@ -1,14 +1,16 @@
 const authenticate = (req, res, next) => {
-    const token = req.cookies.token; 
+    const token = localStorage.getItem("authToken");
     if (!token) {
+        window.location.href = "login.html";
         return res.status(401).json({ message: 'Acesso negado, token não fornecido' });
+    } else {
+        // Decodifica e verifica se o token expirou
+        const decoded = jwt_decode(token);  // Você pode usar a biblioteca jwt-decode para decodificar o token
+        const currentTime = Date.now() / 1000;
     }
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
-        next();
-    } catch (error) {
-        res.status(401).json({ message: 'Token inválido' });
-    }
+    if (decoded.exp < currentTime) {
+        localStorage.removeItem("authToken");  // Remove token expirado
+        window.location.href = "login.html";  // Redireciona para login
+      }
 };

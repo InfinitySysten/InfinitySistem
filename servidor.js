@@ -27,7 +27,7 @@ mongoose.connect('mongodb+srv://Administrador:Parafa11..@cluster0.x3ss8.mongodb.
     .catch(err => console.log("Erro ao conectar ao MongoDB:", err));
 
 // Rota de registro (cadastrar usuário)
-app.post('/api/registro', async (req, res, res) => {
+app.post('/api/registro', async (req, res) => {
     const { username, password, nivel } = req.body;
 
     try {

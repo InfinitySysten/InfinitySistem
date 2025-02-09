@@ -43,7 +43,6 @@
 
                 if (data.success && data.redirectTo) {
                     window.location.href = data.redirectTo;  // 🔄 Faz o redirecionamento
-                    localStorage.setItem("userToken", "logado");
                 } else {
                     console.log("❌ Login falhou:", data.message);
                 }

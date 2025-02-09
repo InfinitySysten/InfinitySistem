@@ -1,37 +1,33 @@
-app.post('/api/login', async (req, res) => {
-    const { username, password } = req.body;
+document.getElementById('loginForm').addEventListener('submit', async (event) => {
+event.preventDefault(); // Previne o envio padrão do formulário
+
+    // Obtém os dados do formulário
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
 
     try {
-        // Procura o usuário no banco
-        const user = await User.findOne({ username });
-        if (!user) {
-            return res.status(400).json({ message: 'Usuário não encontrado' });
-        }
-        
-        // Verifica a senha
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ message: 'Senha incorreta' });
-        }
-
-        // Gera um token JWT
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '5m' });
-
-        res.cookie("token", token, 
-            { httpOnly: true ,
-            secure: process.env.NODE_ENV === "production", // Ativado apenas em produção
-            sameSite: "None", // Necessário para CORS
-            maxAge: 5 * 60 * 1000} // Define o tempo de expiração do cookie
-        );  // Armazena o token em um cookie
-
-        res.status(200).json({
-            success: true,
-            token: token, 
-            redirectTo: "success.html"  // URL de destino
+        const response = await fetch('https://infinitysistem.onrender.com/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
         });
-        
+
+        const data = await response.json();
+
+        // Se login foi bem-sucedido, redireciona para a página de sucesso
+        if (data.success && data.redirectTo) {
+            window.location.hash = '';  // Limpa o hash para evitar voltar para o login
+            window.location.href = data.redirectTo;  // Redireciona para a página de sucesso
+        } else {
+            // Exibe a mensagem de erro caso o login falhe
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('errorMessage').textContent = data.message || 'Erro ao autenticar';
+        }
     } catch (error) {
-        console.error('Erro ao fazer login:', error); // Exibe o erro completo no console
-        res.status(500).json({ message: 'Erro ao fazer login', error: error.message });
+        // Exibe erro de conexão
+        document.getElementById('errorMessage').style.display = 'block';
+        document.getElementById('errorMessage').textContent = 'Erro de conexão com o servidor';
     }
-})
+});

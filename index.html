@@ -25,7 +25,8 @@
             console.error("Erro ao verificar autenticação:", error);
             return false;
         }
-}
+
+        const protectedPages = ["/success", "/login"]; // Defina as páginas protegidas
 
         function checkRoute() {
             let page = window.location.hash.substring(2) || "/login.html"; // Se não houver hash, redireciona para login

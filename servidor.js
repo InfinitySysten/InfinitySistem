@@ -69,7 +69,8 @@ app.post('/api/login', async (req, res) => {
         res.cookie("token", token, 
             { httpOnly: true },
             {secure: process.env.NODE_ENV === "production"}, // Ativado apenas em produção
-            {sameSite: "None"} // Necessário para CORS
+            {sameSite: "None"}, // Necessário para CORS
+            {maxAge: 5 * 60 * 1000} // Define o tempo de expiração do cookie
         );  // Armazena o token em um cookie
 
         res.status(200).json({

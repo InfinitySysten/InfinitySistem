@@ -28,7 +28,7 @@ mongoose.connect('mongodb+srv://Administrador:Parafa11..@cluster0.x3ss8.mongodb.
 
 // Rota de registro (cadastrar usuário)
 app.post('/api/registro', async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, nivel } = req.body;
 
     try {
         const existingUser = await User.findOne({ username });
@@ -37,7 +37,7 @@ app.post('/api/registro', async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ username, password: hashedPassword });
+        const newUser = new User({ username, password: hashedPassword, nivel });
 
         await newUser.save();
         res.status(201).json({ message: 'Usuário registrado com sucesso!' });

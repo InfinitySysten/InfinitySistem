@@ -4,8 +4,8 @@ const pages = {
         <p>Faça login para acessar áreas protegidas.</p>
         <button onclick="login()">Entrar</button>
     `,
-    "dashboard": `
-        <h2>Dashboard</h2>
+    "success": `
+        <h2>Success</h2>
         <p>Você está autenticado e pode ver esta página.</p>
     `,
     "home": `

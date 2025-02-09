@@ -20,52 +20,63 @@
     <p id="errorMessage" style="color: red; display: none;"></p>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            // Captura parâmetros da URL, mesmo com #
-            function getQueryParams() {
-                const queryString = window.location.href.split("?")[1]; // Obtém tudo após "?"
-                if (!queryString) return {};
-                return Object.fromEntries(new URLSearchParams(queryString));
-            }
+        // Função para obter parâmetros da URL (após ?)
+        function getQueryParams() {
+            const queryString = window.location.href.split("?")[1]; // Obtém tudo após "?"
+            if (!queryString) return {};
+            return Object.fromEntries(new URLSearchParams(queryString));
+        }
 
-            // Se houver parâmetros na URL (exemplo: ?username=admin&password=123), faz login automático
+        // Função para preencher o formulário se houver parâmetros na URL
+        function fillFormFromUrl() {
             const params = getQueryParams();
             if (params.username && params.password) {
                 document.getElementById('username').value = params.username;
                 document.getElementById('password').value = params.password;
+                loginWithParams(params.username, params.password); // Tenta fazer login automaticamente
             }
+        }
 
-            // Evento de envio do formulário
-            document.getElementById('loginForm').addEventListener('submit', async (event) => {
-                event.preventDefault(); // Evita recarregar a página
+        // Função para fazer login via API
+        async function loginWithParams(username, password) {
+            const errorMessage = document.getElementById('errorMessage');
+            try {
+                const response = await fetch('https://infinitysistem.onrender.com/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
 
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                const errorMessage = document.getElementById('errorMessage');
+                if (!response.ok) throw new Error(`Erro ${response.status}: ${response.statusText}`);
 
-                try {
-                    const response = await fetch('https://infinitysistem.onrender.com/api/login', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ username, password }) // Usando `username`
-                    });
+                const data = await response.json();
 
-                    if (!response.ok) throw new Error(`Erro ${response.status}: ${response.statusText}`);
-
-                    const data = await response.json();
-
-                    if (data.token) {
-                        localStorage.setItem("token", data.token); // Salva o token
-                        window.location.hash = "#/success"; // Redireciona
-                    } else {
-                        throw new Error(data.message || "Usuário ou senha incorretos");
-                    }
-                } catch (error) {
-                    errorMessage.style.display = 'block';
-                    errorMessage.textContent = error.message;
-                    console.error("❌ Erro de login:", error);
+                if (data.token) {
+                    localStorage.setItem("token", data.token); // Salva o token
+                    window.location.hash = "#/success"; // Redireciona para sucesso
+                } else {
+                    throw new Error(data.message || "Usuário ou senha incorretos");
                 }
-            });
+            } catch (error) {
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = error.message;
+                console.error("❌ Erro de login:", error);
+            }
+        }
+
+        // Preenche automaticamente o formulário e tenta fazer login ao carregar
+        document.addEventListener("DOMContentLoaded", () => {
+            fillFormFromUrl(); // Preenche o formulário com parâmetros da URL, se houver
+        });
+
+        // Evento de envio do formulário
+        document.getElementById('loginForm').addEventListener('submit', async (event) => {
+            event.preventDefault(); // Evita recarregar a página
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            loginWithParams(username, password);
         });
     </script>
 </body>

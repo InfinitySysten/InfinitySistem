@@ -13,50 +13,46 @@
     <script src="pages.js"></script>
     <script>
         async function isAuthenticated() {
-            const token = localStorage.getItem("token"); // ou do cookie, dependendo de onde está armazenado
+    try {
+        const response = await fetch("https://infinitysistem.onrender.com/api/protected", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}` // No caso de cookies, o token já será enviado automaticamente.
+            },
+            credentials: "include" // Importante para enviar cookies com a requisição
+        });
 
-            if (!token) {
-                window.location.hash = "#/login"; // Redireciona para login se não tiver token
-                return false;
-            }
+        if (response.status === 401) {
+            return false; // Retorna false se o token for inválido
+        }
 
-            try {
-                const response = await fetch("https://infinitysistem.onrender.com/api/protected", {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                },
-                credentials: "include"
-                });
-
-                if (response.status === 401) {
-                    window.location.hash = "#/login"; // Redireciona para login se token for inválido
-                    return false;
-                }
-
-                return true; // Usuário autenticado
-            } catch (error) {
-                console.error("Erro ao verificar autenticação:", error);
-                return false;
-            }
+        return true; // Usuário autenticado
+    } catch (error) {
+        console.error("Erro ao verificar autenticação:", error);
+        return false; // Se houver erro, retorna false
+    }
+}
 
         const protectedPages = ["/success", "/login"]; // Defina as páginas protegidas
 
-        function checkRoute() {
+        async function checkRoute() {
             let page = window.location.hash.substring(2) || "login"; // Se não houver hash, redireciona para login
 
-            if (isAuthenticated() && page === "login") {
-                window.location.hash = "#/success"; // Redireciona para dashboard se já estiver logado
+            // Aguarda a resposta de isAuthenticated antes de continuar
+            const isLoggedIn = await isAuthenticated();
+
+            if (isLoggedIn && page === "login") {
+                window.location.hash = "#/success"; // Redireciona para sucesso se já estiver logado
                 return;
             }
 
-            if (protectedPages.includes("/" + page) && !isAuthenticated()) {
+            if (protectedPages.includes("/" + page) && !isLoggedIn) {
                 alert("Você precisa estar logado para acessar esta página!");
                 window.location.hash = "#/login";
                 return;
             }
 
-            loadPage(page);
+            loadPage(page); // Carrega a página solicitada
         }
 
         function loadPage(page) {
@@ -69,30 +65,10 @@
                 .catch(() => document.getElementById("content").innerHTML = "<p>Página não encontrada</p>");
         }
 
-        function login() {
-            localStorage.setItem("userToken", "logado");
-            alert("Login realizado com sucesso!");
-            window.location.hash = "#/success";
-            checkRoute();
-        }
+        window.addEventListener("hashchange", checkRoute); // Monitorar mudanças no hash da URL
 
-        function logout() {
-            localStorage.removeItem("userToken");
-            alert("Você saiu do sistema!");
-            window.location.hash = "#/login";
-            checkRoute();
-        }
-
-        window.addEventListener("hashchange", checkRoute);
-
-        if (!isAuthenticated()) {
-            window.location.hash = "#/login"; // Garante que sempre começa no login
-        } else {
-            window.location.hash = "#/success"; // Se já estiver logado, entra direto
-        }
-
+        // A primeira verificação de autenticação quando a página for carregada
         checkRoute();
-    }
     </script>
 </body>
 </html>

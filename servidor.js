@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-const allowedOrigins = ['https://infinitysistem.github.io'];  // Domínio específico permitido
+const allowedOrigins = ['https://infinitysysten.github.io'];  // Domínio específico permitido
 
 app.use(cors({
     origin: function(origin, callback) {

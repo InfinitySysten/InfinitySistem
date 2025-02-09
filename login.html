@@ -27,9 +27,10 @@
             return Object.fromEntries(new URLSearchParams(queryString));
         }
 
-        // Função para preencher o formulário se houver parâmetros na URL
+        // Função para preencher o formulário e tentar login
         function fillFormFromUrl() {
             const params = getQueryParams();
+            console.log("Parâmetros da URL:", params); // Adicionando log para depuração
             if (params.username && params.password) {
                 document.getElementById('username').value = params.username;
                 document.getElementById('password').value = params.password;
@@ -40,17 +41,23 @@
         // Função para fazer login via API
         async function loginWithParams(username, password) {
             const errorMessage = document.getElementById('errorMessage');
+            console.log("Tentando login com:", { username, password }); // Log para verificar os dados
+
             try {
                 const response = await fetch('https://infinitysistem.onrender.com/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
+                    body: JSON.stringify({ username, password }) // Envia dados como JSON
                 });
 
-                if (!response.ok) throw new Error(`Erro ${response.status}: ${response.statusText}`);
+                // Verifica se a requisição foi bem-sucedida
+                if (!response.ok) {
+                    const errorData = await response.json(); // Pega resposta de erro do servidor
+                    console.error("Erro do servidor:", errorData); // Log do erro recebido do servidor
+                    throw new Error(`Erro ${response.status}: ${response.statusText}`);
+                }
 
                 const data = await response.json();
-
                 if (data.token) {
                     localStorage.setItem("token", data.token); // Salva o token
                     window.location.hash = "#/success"; // Redireciona para sucesso
@@ -64,7 +71,7 @@
             }
         }
 
-        // Preenche automaticamente o formulário e tenta fazer login ao carregar
+        // Preenche automaticamente o formulário e tenta fazer login
         document.addEventListener("DOMContentLoaded", () => {
             fillFormFromUrl(); // Preenche o formulário com parâmetros da URL, se houver
         });

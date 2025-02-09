@@ -16,7 +16,7 @@
             const token = localStorage.getItem("token"); // ou do cookie, dependendo de onde está armazenado
 
             if (!token) {
-                let page = window.location.hash.substring(2) || "/login"; // Redireciona para login se não tiver token
+                window.location.hash.substring(2) || "/login"; // Redireciona para login se não tiver token
                 return false;
             }
 

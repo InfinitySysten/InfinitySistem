@@ -13,14 +13,19 @@
     <script src="pages.js"></script>
     <script>
         async function isAuthenticated() {
-            try {
-                const response = await fetch('https://infinitysistem.onrender.com/api/check', { credentials: "include" });
-                const data = await response.json();
-                return data.authenticated;
-            } catch (error) {
-                return false;
-            }
+        try {
+            const response = await fetch("https://infinitysistem.onrender.com/api/check", {
+                method: "GET",
+                credentials: "include" // 🔥 IMPORTANTE: Isso envia o cookie junto!
+            });
+
+            const data = await response.json();
+            return data.authenticated;
+        } catch (error) {
+            console.error("Erro ao verificar autenticação:", error);
+            return false;
         }
+}
 
         function checkRoute() {
             let page = window.location.hash.substring(2) || "/login.html"; // Se não houver hash, redireciona para login

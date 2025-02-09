@@ -92,6 +92,21 @@ const authenticate = (req, res, next) => {
     }
 };
 
+app.get("/auth/check", (req, res) => {
+    const token = req.cookies.token; // Obtém o token do cookie
+
+    if (!token) {
+        return res.status(401).json({ authenticated: false });
+    }
+
+    try {
+        jwt.verify(token, SECRET_KEY); // Verifica o token JWT
+        res.json({ authenticated: true });
+    } catch (error) {
+        res.status(401).json({ authenticated: false });
+    }
+});
+
 app.get('/api/protected', authenticate, (req, res) => {
     res.json({ message: 'Bem-vindo à área protegida!', userId: req.user.userId });
 });

@@ -78,24 +78,26 @@ app.post('/api/login', async (req, res) => {
 
 // Rota protegida
 const authenticate = (req, res, next) => {
-    const token = localStorage.getItem("authToken");
+    // Verifica o token no cookie
+    const token = req.cookies.token;
+
     if (!token) {
-        window.location.href = "login.html";
         return res.status(401).json({ message: 'Acesso negado, token não fornecido' });
-    } else {
-        // Decodifica e verifica se o token expirou
-        const decoded = jwt_decode(token);  // Você pode usar a biblioteca jwt-decode para decodificar o token
-        const currentTime = Date.now() / 1000;
     }
 
-    if (decoded.exp < currentTime) {
-        localStorage.removeItem("authToken");  // Remove token expirado
-        window.location.href = "login.html";  // Redireciona para login
-      }
+    try {
+        // Verifica se o token é válido
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Decodifica o token
+        req.user = decoded; // Adiciona os dados do usuário à requisição
+        next(); // Chama o próximo middleware ou rota
+    } catch (err) {
+        return res.status(401).json({ message: 'Token inválido ou expirado' });
+    }
 };
 
-app.get('/api/protected', authenticate, (req, res) => {
-    res.json({ message: 'Bem-vindo à área protegida!', userId: req.user.userId });
+app.get('/area-exclusiva', authenticate, (req, res) => {
+    // Somente usuários com um token válido terão acesso
+    res.render('area_exclusiva', { dados: { autenticado: true, token: req.cookies.token } });
 });
 
 // Iniciar o servidor

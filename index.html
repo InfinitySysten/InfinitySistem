@@ -41,19 +41,15 @@
 
             // Evita redirecionamento desnecessário para login
             if (!isAuth && page !== "login") {
-                console.log("Usuário não autenticado! Redirecionando para login...");
-                if (window.location.hash !== "#/login") { 
-                    window.location.hash = "#/login";
-                }
+                console.log("Usuário não autenticado! Redirecionando para login..."); 
+                window.location.hash = "#/login";
                 return;
             }
 
             // Se o usuário já estiver logado e tentar acessar login, redireciona para success
             if (isAuth && page === "login") {
                 console.log("Usuário já autenticado! Redirecionando para success...");
-                if (window.location.hash !== "#/success") {
-                    window.location.hash = "#/success";
-                }
+                window.location.hash = "#/success";
                 return;
             }
 
@@ -71,6 +67,10 @@
         }
 
         window.addEventListener("hashchange", checkRoute);
+
+        if (!window.location.hash) {
+            window.location.hash = "#/login";
+        }
 
         checkRoute(); // Verifica a rota ao carregar a página
     </script>

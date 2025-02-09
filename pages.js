@@ -2,7 +2,6 @@ const pages = {
     "login": `
         <h2>Login</h2>
         <p>Faça login para acessar áreas protegidas.</p>
-        <button onclick="login()">Entrar</button>
     `,
     "success": `
         <h2>Success</h2>
@@ -15,6 +14,5 @@ const pages = {
     "registro": `
         <h2>Registro</h2>
         <p>Cadastre-se para criar uma conta.</p>
-        <button onclick="alert('Registro não implementado')">Registrar</button>
     `
 };

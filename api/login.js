@@ -19,6 +19,8 @@ app.post('/api/login', async (req, res) => {
 
         res.cookie("token", token, { httpOnly: true });  // Armazena o token em um cookie
 
+        localStorage.setItem("authToken", token);
+
         res.status(200).json({
             success: true,
             token: token, 

@@ -29,16 +29,16 @@
         const protectedPages = ["/success", "/login"]; // Defina as páginas protegidas
 
         function checkRoute() {
-            let page = window.location.hash.substring(2) || "/login.html"; // Se não houver hash, redireciona para login
+            let page = window.location.hash.substring(2) || "/login"; // Se não houver hash, redireciona para login
 
             if (isAuthenticated() && page === "login") {
-                window.location.hash = "#/success.html"; // Redireciona para dashboard se já estiver logado
+                window.location.hash = "#/success"; // Redireciona para dashboard se já estiver logado
                 return;
             }
 
             if (protectedPages.includes("/" + page) && !isAuthenticated()) {
                 alert("Você precisa estar logado para acessar esta página!");
-                window.location.hash = "#/login.html";
+                window.location.hash = "#/login";
                 return;
             }
 
@@ -58,23 +58,23 @@
         function login() {
             localStorage.setItem("userToken", "logado");
             alert("Login realizado com sucesso!");
-            window.location.hash = "#/success.html";
+            window.location.hash = "#/success";
             checkRoute();
         }
 
         function logout() {
             localStorage.removeItem("userToken");
             alert("Você saiu do sistema!");
-            window.location.hash = "#/login.html";
+            window.location.hash = "#/login";
             checkRoute();
         }
 
         window.addEventListener("hashchange", checkRoute);
 
         if (!isAuthenticated()) {
-            window.location.hash = "#/login.html"; // Garante que sempre começa no login
+            window.location.hash = "#/login"; // Garante que sempre começa no login
         } else {
-            window.location.hash = "#/success.html"; // Se já estiver logado, entra direto
+            window.location.hash = "#/success"; // Se já estiver logado, entra direto
         }
 
         checkRoute();

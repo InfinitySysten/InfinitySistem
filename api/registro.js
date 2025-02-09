@@ -1,4 +1,4 @@
-app.post('/api/registro', async (req, res) => {
+app.post('/api/registro', async (req, res, res) => {
     const { username, password, nivel } = req.body;
 
     try {

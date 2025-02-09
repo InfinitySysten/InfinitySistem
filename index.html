@@ -13,6 +13,13 @@
     <script src="pages.js"></script>
         <script>
             async function isAuthenticated() {
+                const token = req.cookies.token; // Ou use cookies, dependendo de como você armazena
+
+                if (!token) {
+                    window.location.hash = "#/login";  // Redireciona para login se não houver token
+                    return false;
+                }
+
                 try {
                     const response = await fetch("https://infinitysistem.onrender.com/api/protected", {
                         method: "GET",

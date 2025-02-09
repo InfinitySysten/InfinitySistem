@@ -14,9 +14,24 @@ const PORT = process.env.PORT || 10000;
 
 // Middlewares
 app.use(express.json());
-app.use(cors());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+
+const allowedOrigins = ['https://infinitysistem.github.io'];  // Domínio específico permitido
+
+app.use(cors({
+    origin: function(origin, callback) {
+        // Permite o acesso apenas para a origem especificada
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ["GET", "POST"],  // Permitir métodos HTTP necessários
+    credentials: true,  // Permitir o envio de cookies
+    allowedHeaders: ['Content-Type', 'Authorization'],  // Permite cabeçalhos necessários
+}));
 
 // Conectar ao MongoDB
 mongoose.connect('mongodb+srv://Administrador:Parafa11..@cluster0.x3ss8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {

@@ -13,9 +13,9 @@
     <script>
         async function isAuthenticated() {
             const token = localStorage.getItem("token"); // Ou use cookies, dependendo de como você armazena
-
+            
             if (!token) {
-                return false;
+                return false; // Se não há token, o usuário não está autenticado
             }
 
             try {
@@ -34,20 +34,26 @@
         const protectedPages = ["/success", "/dashboard"]; // Defina as páginas protegidas
 
         async function checkRoute() {
-            let page = window.location.hash.substring(2) || "login"; // Se não houver hash, redireciona para login
+            let page = window.location.hash.substring(2) || "login"; // Obtém a página a partir do hash
+            const isAuth = await isAuthenticated(); // Aguarda a resposta da verificação de autenticação
 
-            const isAuth = await isAuthenticated();
+            console.log(`Página solicitada: ${page}, Usuário autenticado: ${isAuth}`);
 
-            // Se já estiver logado e tentando acessar a página de login, redireciona para success
-            if (page === "login" && isAuth) {
-                window.location.hash = "#/success"; 
+            // Evita redirecionamento desnecessário para login
+            if (!isAuth && page !== "login") {
+                console.log("Usuário não autenticado! Redirecionando para login...");
+                if (window.location.hash !== "#/login") { 
+                    window.location.hash = "#/login";
+                }
                 return;
             }
 
-            // Se for uma página protegida e o usuário não estiver autenticado, redireciona para login
-            if (protectedPages.includes("/" + page) && !isAuth) {
-                alert("Você precisa estar logado para acessar esta página!");
-                window.location.hash = "#/login"; 
+            // Se o usuário já estiver logado e tentar acessar login, redireciona para success
+            if (isAuth && page === "login") {
+                console.log("Usuário já autenticado! Redirecionando para success...");
+                if (window.location.hash !== "#/success") {
+                    window.location.hash = "#/success";
+                }
                 return;
             }
 
@@ -70,3 +76,4 @@
     </script>
 </body>
 </html>
+

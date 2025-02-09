@@ -12,7 +12,7 @@
 
     <script src="pages.js"></script>
     <script>
-        await function isAuthenticated() {
+        async function isAuthenticated() {
             const token = localStorage.getItem("token"); // ou do cookie, dependendo de onde está armazenado
 
             if (!token) {

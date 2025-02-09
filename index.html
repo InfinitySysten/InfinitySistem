@@ -29,10 +29,10 @@
                 credentials: "include"
                 });
 
-            if (response.status === 401) {
-                window.location.hash = "#/login"; // Redireciona para login se token for inválido
-                return false;
-            }
+                if (response.status === 401) {
+                    window.location.hash = "#/login"; // Redireciona para login se token for inválido
+                    return false;
+                }
 
                 return true; // Usuário autenticado
             } catch (error) {

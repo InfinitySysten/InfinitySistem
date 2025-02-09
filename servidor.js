@@ -92,7 +92,7 @@ const authenticate = (req, res, next) => {
     }
 };
 
-app.get("/auth/check", (req, res) => {
+app.get("/api/check", (req, res) => {
     const token = req.cookies.token; // Obtém o token do cookie
 
     if (!token) {

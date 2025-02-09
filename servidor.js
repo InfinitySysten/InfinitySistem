@@ -14,10 +14,7 @@ const PORT = process.env.PORT || 10000;
 
 // Middlewares
 app.use(express.json());
-app.use(cors({
-    origin: "https://infinitysysten.github.io", // 🔥 Altere para seu frontend
-    credentials: true // 🔥 Permite envio de cookies
-}));
+app.use(cors());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 

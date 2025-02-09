@@ -19,7 +19,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 // Conectar ao MongoDB
-mongoose.connect('mongodb://localhost:27017/loginDB', {
+mongoose.connect('mongodb+srv://Administrador:Parafa11..@cluster0.x3ss8.mongodb.net/loginDB', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })

@@ -95,12 +95,7 @@ app.post('/api/login', async (req, res) => {
                 document.getElementById('errorMessage').style.display = 'block';
                 document.getElementById('errorMessage').textContent = 'Erro de conexão com o servidor';
             }
-        });
     });
-
-    } catch (error) {
-        res.status(500).json({ message: 'Erro ao realizar login', error });
-    }
 });
 
 // Rota protegida
